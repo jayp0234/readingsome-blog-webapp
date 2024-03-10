@@ -1,5 +1,7 @@
 import express from "express";
 import mongoose from "mongoose";
+import "dotenv/config";
+import bcrypt from "bcryptjs"
 
 const server = express();
 
