@@ -14,9 +14,10 @@ const AnimationWrapper = ({
       initial={initial}
       animate={animate}
       transition={transition}
+      className={className}
     >
       {children}
-      className={className}
+     
     </motion.div>
   );
 };
