@@ -7,13 +7,12 @@ import jsonwebtoken, { decode } from "jsonwebtoken";
 import cors from "cors";
 import admin from "firebase-admin";
 import serviceAccountKey from "./serviceAccountKey.json" assert { type: "json" };
+import aws from "aws-sdk";
 
 //schema
 import User from "./Schema/User.js";
 
 const server = express();
-
-
 
 let PORT = 3000;
 
@@ -32,6 +31,25 @@ mongoose
   .connect(dbURI, { useNewUrlParser: true, useUnifiedTopology: true })
   .then(() => console.log("MongoDB connected…"))
   .catch((err) => console.log(err));
+
+//setting up AWS S3 Bucket
+const s3 = new aws.S3({
+  region: "us-west-1",
+  accessKeyId: process.env.AWS_ACCESS_KEY,
+  secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY,
+});
+
+const generateUploadUrl = async () => {
+  const date = new Date();
+  const imageName = `${nanoid()}-${date.getTime()}.jpeg`;
+
+  return await s3.getSignedUrlPromise("putObject", {
+    Bucket: "readingsome",
+    Key: imageName,
+    Expires: 1000,
+    ContentType: "image/jpeg",
+  });
+};
 
 const formatDataToSend = (user) => {
   const access_token = jsonwebtoken.sign(
@@ -56,6 +74,16 @@ const generateUsername = async (email) => {
   isUsernameNotUnique ? (username += nanoid().substring(0, 5)) : "";
   return username;
 };
+
+//upload image url
+server.get("/get-upload-url", (req, res) => {
+  generateUploadUrl()
+    .then((url) => res.status(200).json({ uploadURL: url }))
+    .catch((err) => {
+      console.log(err.message);
+      return res.status(500).json({error: err.message});
+    });
+});
 
 server.post("/signup", (req, res) => {
   let { fullname, email = undefined, password } = req.body;
@@ -112,15 +140,14 @@ server.post("/login", (req, res) => {
         return res.status(403).json({ error: "Email not found" });
       }
 
-      if(!user.google_auth){
-
+      if (!user.google_auth) {
         bcrypt.compare(password, user.personal_info.password, (err, result) => {
           if (err) {
             return res
               .status(403)
               .json({ error: "Error occured while login, Please try again" });
           }
-  
+
           if (!result) {
             return res.status(403).json({ error: "Incorrect password" });
           } else {
@@ -128,9 +155,11 @@ server.post("/login", (req, res) => {
           }
         });
       } else {
-        return res.status(403).json({"error": "Account was created using Google, try logging in with Google Account"})
+        return res.status(403).json({
+          error:
+            "Account was created using Google, try logging in with Google Account",
+        });
       }
-
     })
     .catch((err) => {
       console.log(err.message);
@@ -141,7 +170,8 @@ server.post("/login", (req, res) => {
 server.post("/google-auth", async (req, res) => {
   let { access_token } = req.body;
 
-  admin.auth()
+  admin
+    .auth()
     .verifyIdToken(access_token)
     .then(async (decodedUser) => {
       let { email, name, picture } = decodedUser;
@@ -193,11 +223,9 @@ server.post("/google-auth", async (req, res) => {
       return res.status(200).json(formatDataToSend(user));
     })
     .catch((err) => {
-      return res
-        .status(500)
-        .json({
-          error: "Failed to suthenticate with this google. Try another account",
-        });
+      return res.status(500).json({
+        error: "Failed to suthenticate with this google. Try another account",
+      });
     });
 });
 

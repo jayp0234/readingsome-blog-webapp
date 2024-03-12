@@ -27,14 +27,14 @@ const handleBlur =() => {
   return (
     <>
       <nav className="navbar">
-        <Link to="/" className="flex-none w-12">
-          <img src={logo} alt="logo" className="w-full" />
-         {/* <button className="btn btn-ghost ml-[20%] text-2xl font-bold ">ReadingSome</button> */}
+        <Link to="/" className="flex-none w-14">
+          <img src={logo} alt="logo" className="w-full drop-shadow-xl" />
+         <button className="btn btn-ghost ml-[1%] text-2xl font-bold font-sans drop-shadow-xl">ReadingSome</button>
         </Link>
 
         <div
           className={
-            "absolute bg-white w-full left-0 top-full mt-0.5 border-b border-grey py-4 px-[5vw] md:border-0 md:block md:relative md:inset-0 md:p-0 md:w-auto md:show " +
+            "absolute bg-white w-full left-0 top-full mt-0.5 border-b border-grey py-4 px-[5vw] xl:ml-[10%] lg:ml-[12%] md:ml-[17%]  md:border-0 md:block md:relative md:inset-0 md:p-0 md:w-auto md:show " +
             (searchBoxVisibility ? "show" : "hide")
           }
         >
@@ -46,12 +46,14 @@ const handleBlur =() => {
 
           <i className="fi fi-rr-search absolute right-[10%] md:pointer-events-none md:left-5 top-1/2 -translate-y-1/2 text-xl text-black"></i>
         </div>
+
+
         <div className="flex items-center gap-3 md:gap-6 ml-auto ">
           <button
             className="md:hidden bg-grey w-12 h-12 rounded-full flex items-center justify-center"
             onClick={() => setSearchBoxVisibility((currentVal) => !currentVal)}
           >
-            <i className="fi fi-rr-search text-2xl mt-2"></i>
+            <i className="fi fi-sr-search text-2xl mt-2"></i>
           </button>
 
           {/* self */}
