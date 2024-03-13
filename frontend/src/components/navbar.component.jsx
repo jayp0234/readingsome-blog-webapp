@@ -29,7 +29,7 @@ const handleBlur =() => {
       <nav className="navbar">
         <Link to="/" className="flex-none w-14">
           <img src={logo} alt="logo" className="w-full drop-shadow-xl" />
-         <button className="btn btn-ghost ml-[1%] text-2xl font-bold font-sans drop-shadow-xl">ReadingSome</button>
+         <button className="btn btn-ghost ml-[1%] text-2xl font-bold drop-shadow-xl">ReadingSome</button>
         </Link>
 
         <div
