@@ -1,5 +1,6 @@
 import { Route, Routes } from "react-router-dom";
 import Navbar from "./components/navbar.component";
+import HomePage from "./pages/home.page";
 import UserAuthForm from "./pages/userAuthForm.page";
 import { createContext, useEffect, useState } from "react";
 import { lookInSession } from "./common/session";
@@ -20,6 +21,7 @@ const App = () => {
       <Routes>
         <Route path="/editor" element={<Editor/>}/>
         <Route path="/" element={<Navbar />}>
+          <Route index element={<HomePage/>}/>
           <Route path="signup" element={<UserAuthForm type="sign-up" />} />
           <Route path="login" element={<UserAuthForm type="log-in" />} />
         </Route>
