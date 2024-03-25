@@ -1,10 +1,14 @@
 import { Children, useEffect, useRef, useState } from "react"
 
+
+export let activeTabLineRef;
+export let activeTabRef;
+
 const InPageNavigation = ({ routes, defaultHidden= [],defaultActiveIndex = 0, children }) => {
 
-    let activeTabLineRef = useRef();
+     activeTabLineRef = useRef();
 
-    let activeTabRef =useRef();
+     activeTabRef =useRef();
 
     let [ inPageNavIndex, setInPageNavIndex] = useState(defaultActiveIndex);
 
