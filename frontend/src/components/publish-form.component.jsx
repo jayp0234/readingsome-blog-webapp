@@ -5,11 +5,13 @@ import { EditorContext } from "../pages/editor.pages";
 import Tag from "./tags.component";
 import axios from "axios";
 import { UserContext } from "../App";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 
 const PublishForm = () => {
   let characterLimit = 200;
   let tagLimit = 10;
+
+  let { blog_id } = useParams();
 
   let {
     blog: { banner, title, tags, des, content },
@@ -18,7 +20,7 @@ const PublishForm = () => {
     blog,
   } = useContext(EditorContext);
 
-  let { userAuth: { access_token }} = useContext(UserContext);
+  let { userAuth: { access_token } } = useContext(UserContext);
 
   let navigate = useNavigate();
 
@@ -64,17 +66,17 @@ const PublishForm = () => {
 
   const publishBlog = (e) => {
 
-    if(e.target.className.includes("disable")){
+    if (e.target.className.includes("disable")) {
       return;
     }
 
-    if(!title.length){
+    if (!title.length) {
       return toast.error("Write Some blog title to publish")
     }
-    if(!des.length || des.length > 200){
+    if (!des.length || des.length > 200) {
       return toast.error(`Write Some blog description within ${characterLimit} chars to publish`)
     }
-    if(!tags.length){
+    if (!tags.length) {
       return toast.error("Write Some blog tags to help us rank your blog")
     }
 
@@ -83,21 +85,21 @@ const PublishForm = () => {
     e.target.classList.add('disable')
 
     let blogObj = {
-      title, banner, des, content, tags, draft: false 
+      title, banner, des, content, tags, draft: false
     }
 
-    axios.post(import.meta.env.VITE_SERVER_DOMAIN + "/create-blog", blogObj, {
+    axios.post(import.meta.env.VITE_SERVER_DOMAIN + "/create-blog", { ...blogObj, id: blog_id }, {
       headers: {
         'Authorization': `Bearer ${access_token}`
       }
     }).then(() => {
       e.target.classList.remove('disable');
-      
+
       toast.dismiss(loadingToast);
       toast.success("Published Some 😃");
 
       setTimeout(() => {
-navigate("/")
+        navigate("/")
       }, 500);
     }).catch(({ response }) => {
       e.target.classList.remove('disable');
@@ -170,15 +172,15 @@ navigate("/")
             />
             {tags.map((tag, i) => {
               return <Tag tag={tag} tagIndex={i} key={i} />;
-            })} 
+            })}
           </div>
           <p className="mt-1 mb-4 text-dark-grey text-sm text-right">
             {tagLimit - tags.length} tag left
           </p>
 
           <button className="btn-dark px-8"
-          
-          onClick={publishBlog}
+
+            onClick={publishBlog}
           >Publish</button>
         </div>
       </section>

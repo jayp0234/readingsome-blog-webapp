@@ -1,4 +1,4 @@
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useNavigate, useParams } from "react-router-dom";
 import logo from "../imgs/logo.png";
 import AnimationWrapper from "../common/page-animation";
 import defaultBanner from "../imgs/blog banner.png";
@@ -26,6 +26,8 @@ const BlogEditor = () => {
 
   let { userAuth: {access_token}} = useContext(UserContext);
 
+  let {blog_id} = useParams();
+
   let navigate = useNavigate();
   //useEffect
   useEffect(() => {
@@ -33,7 +35,7 @@ const BlogEditor = () => {
       setTextEditor(
         new EditorJS({
           holder: "textEditor",
-          data: content,
+          data: Array.isArray(content) ? content[0] : content,
           tools: tools,
           placeholder: "Let's Write Some",
         })
@@ -137,7 +139,7 @@ const BlogEditor = () => {
         };
         
         axios
-        .post(import.meta.env.VITE_SERVER_DOMAIN + "/create-blog", blogObj, {
+        .post(import.meta.env.VITE_SERVER_DOMAIN + "/create-blog", { ...blogObj, id: blog_id}, {
           headers: {
             Authorization: `Bearer ${access_token}`,
           },
