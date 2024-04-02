@@ -9,30 +9,37 @@ import SearchPage from "./pages/search.page";
 import PageNotFound from "./pages/404.page";
 import ProfilePage from "./pages/profile.page";
 import BlogPage from "./pages/blog.page";
+import SideNav from "./components/sidenavbar.component";
+import ChangePassword from "./pages/change-password.page";
+import EditProfile from "./pages/edit-profile.page";
 
 export const UserContext = createContext({});
 
 const App = () => {
-  const [userAuth, setUserAuth] = useState({access_token: null}); // Set initial state to avoid undefined
+  const [userAuth, setUserAuth] = useState({ access_token: null }); // Set initial state to avoid undefined
 
   useEffect(() => {
     let userInSession = lookInSession("user");
-    userInSession ? setUserAuth(JSON.parse(userInSession)) : setUserAuth({access_token: null})
+    userInSession ? setUserAuth(JSON.parse(userInSession)) : setUserAuth({ access_token: null })
   }, [])
 
   return (
-    <UserContext.Provider value={{userAuth, setUserAuth}}>
+    <UserContext.Provider value={{ userAuth, setUserAuth }}>
       <Routes>
-        <Route path="/editor" element={<Editor/>}/>
-        <Route path="/editor/:blog_id" element={<Editor/>}/>
+        <Route path="/editor" element={<Editor />} />
+        <Route path="/editor/:blog_id" element={<Editor />} />
         <Route path="/" element={<Navbar />}>
-          <Route index element={<HomePage/>}/>
+          <Route index element={<HomePage />} />
+          <Route path="settings" element={<SideNav />}>
+            <Route path="edit-profile" element={<EditProfile/>} />
+            <Route path="change-password" element={<ChangePassword/>} />
+          </Route>
           <Route path="signup" element={<UserAuthForm type="sign-up" />} />
           <Route path="login" element={<UserAuthForm type="log-in" />} />
-          <Route path="search/:query" element={<SearchPage />}/>
+          <Route path="search/:query" element={<SearchPage />} />
           <Route path="user/:id" element={<ProfilePage />} />
-          <Route path="blog/:blog_id" element={<BlogPage />}/>
-          <Route path="*" element={<PageNotFound/>}/>
+          <Route path="blog/:blog_id" element={<BlogPage />} />
+          <Route path="*" element={<PageNotFound />} />
         </Route>
       </Routes>
     </UserContext.Provider>

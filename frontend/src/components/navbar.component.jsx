@@ -36,7 +36,7 @@ let navigate = useNavigate();
 
   return (
     <>
-      <nav className="navbar">
+      <nav className="navbar z-50">
         <Link to="/" className="flex-none w-14">
           <img src={logo} alt="logo" className="w-full drop-shadow-xl" />
           <button className="btn btn-ghost ml-[1%] text-2xl font-bold drop-shadow-xl">ReadingSome</button>

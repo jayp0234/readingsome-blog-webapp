@@ -1,4 +1,13 @@
-# Aeccess Token - eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY1ZmI5ODg3YWYzMGY2MDI3MzBlY2I1YiIsImlhdCI6MTcxMDk4NzM5OX0.6Jw20WhlHwpUVq0N-cZRDqKDqzRBMR0XuY1ZGXr4BFY
+# Aeccess Token - eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY1ZmI5ODg3YWYzMGY2MDI3MzBlY2I1YiIsImlhdCI6MTcxMjA1MTcyNH0.Zaw2sbHPlxCQLlUi25acHGj1K16Kj7rjD1YU-kywF4E
+
+POST http://localhost:3000/login
+Content-Type: application/json
+
+{
+   "email" : "john1@gmail.com",
+   "password" : "John123"
+}
+
 
 # POST http://localhost:3000/signup
 # Content-Type: application/json
@@ -9,10 +18,12 @@
 #     "password" : "John123"
 # }
 
-# Authorization: Bearer
-POST http://localhost:3000/get-profile
-Content-Type: application/json
 
-{
-   "username": "aryanpatel1303"
-}
+# POST http://localhost:3000/change-password
+# Content-Type: application/json
+# Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY1ZmI5ODg3YWYzMGY2MDI3MzBlY2I1YiIsImlhdCI6MTcxMjA1MTcyNH0.Zaw2sbHPlxCQLlUi25acHGj1K16Kj7rjD1YU-kywF4E
+
+# {
+#    "currentPassword": "Aryan123",
+#    "newPassword": "John123"
+# }
