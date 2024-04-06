@@ -20,7 +20,7 @@ const UserNavigationPanel = () => {
       transition={{ duration: 0.2 }}
       className="absolute right-0 z-50"
     >
-      <div className="bg-white absolute right-0 border border-grey w-60 duration-200">
+      <div className="bg-white absolute right-0 border border-grey w-60 duration-200 rounded-md">
         <Link to="/editor" className="flex items-center justify-between link md:hidden pl-8 py-4"> 
           <p>Write</p>
           <i className="fi fi-rr-file-edit text-xl"></i>
@@ -30,7 +30,7 @@ const UserNavigationPanel = () => {
           <i className="fi fi-rr-user-pen text-xl"></i>
         </Link>
 
-        <Link to="/dashboard/blog" className="flex items-center justify-between link md:hidden pl-8 py-4">
+        <Link to="/dashboard/blogs" className="flex items-center justify-between link md:hidden pl-8 py-4">
           Dashboard
           <i className="fi fi-rr-browsers text-xl"></i>
         </Link>

@@ -1,12 +1,12 @@
-# Aeccess Token - eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY1ZmI5ODg3YWYzMGY2MDI3MzBlY2I1YiIsImlhdCI6MTcxMjA1MTcyNH0.Zaw2sbHPlxCQLlUi25acHGj1K16Kj7rjD1YU-kywF4E
+# Aeccess Token - eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY2MTBhZTk3OWVkMzQwMGRjOWQ4NDU2NiIsImlhdCI6MTcxMjM2OTQ0OX0.AaeEpjpQuxxpVE71uOfcT9S-couEkqyEoZfPeXD4mCo
 
-POST http://localhost:3000/login
-Content-Type: application/json
+# POST http://localhost:3000/login
+# Content-Type: application/json
 
-{
-   "email" : "john1@gmail.com",
-   "password" : "John123"
-}
+# {
+#    "email" : "test2@gmail.com",
+#    "password" : "Test123"
+# }
 
 
 # POST http://localhost:3000/signup
@@ -19,11 +19,11 @@ Content-Type: application/json
 # }
 
 
-# POST http://localhost:3000/change-password
-# Content-Type: application/json
-# Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY1ZmI5ODg3YWYzMGY2MDI3MzBlY2I1YiIsImlhdCI6MTcxMjA1MTcyNH0.Zaw2sbHPlxCQLlUi25acHGj1K16Kj7rjD1YU-kywF4E
+POST http://localhost:3000/user-written-blogs
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY2MTBhZTk3OWVkMzQwMGRjOWQ4NDU2NiIsImlhdCI6MTcxMjM2OTQ0OX0.AaeEpjpQuxxpVE71uOfcT9S-couEkqyEoZfPeXD4mCo
 
-# {
-#    "currentPassword": "Aryan123",
-#    "newPassword": "John123"
-# }
+{
+   "page": 1,
+   "draft": false
+}

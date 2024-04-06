@@ -287,7 +287,7 @@ server.post("/change-password", verifyJWT, (req, res) => {
     })
     .catch(err => {
       console.log(err);
-      res.status(500).json({error: "user not found"})
+      res.status(500).json({ error: "user not found" })
     })
 
 
@@ -428,12 +428,12 @@ server.post("/update-profile-img", verifyJWT, (req, res) => {
   let { url } = req.body;
 
   User.findOneAndUpdate({ _id: req.user }, { "personal_info.profile_img": url })
-  .then(() => {
-    return res.status(200).json({profile_img: url})
-  })
-  .catch(err => {
-    return res.status(500).json({error: err.message})
-  })
+    .then(() => {
+      return res.status(200).json({ profile_img: url })
+    })
+    .catch(err => {
+      return res.status(500).json({ error: err.message })
+    })
 
 })
 
@@ -443,29 +443,29 @@ server.post("/update-profile", verifyJWT, (req, res) => {
 
   let bioLimit = 150;
 
-  if(username.length < 3){
-    return res.status(403).json({error: "Username should be atleast 3 letters long"})
+  if (username.length < 3) {
+    return res.status(403).json({ error: "Username should be atleast 3 letters long" })
   }
-  if(bio.length > bioLimit){
-    return res.status(403).json({error: `Bio should not be more than ${bioLimit} characters`})
+  if (bio.length > bioLimit) {
+    return res.status(403).json({ error: `Bio should not be more than ${bioLimit} characters` })
   }
 
   let sociallinksArr = Object.keys(social_links);
 
-  try{
+  try {
 
-    for(let i = 0; i < sociallinksArr.length; i++){
-      if(social_links[sociallinksArr[i]].length){
+    for (let i = 0; i < sociallinksArr.length; i++) {
+      if (social_links[sociallinksArr[i]].length) {
         let hostname = new URL(social_links[sociallinksArr[i]]).hostname;
 
-        if(!hostname.includes(`${sociallinksArr[i]}.com`) && sociallinksArr[i] != 'website'){
-          return res.status(403).json({ error: `${sociallinksArr[i]} link is invalid. You must enter a full link`})
+        if (!hostname.includes(`${sociallinksArr[i]}.com`) && sociallinksArr[i] != 'website') {
+          return res.status(403).json({ error: `${sociallinksArr[i]} link is invalid. You must enter a full link` })
         }
       }
     }
 
-  } catch(err){
-    return res.status(500).json({ error: "You must provide full social links with http(s) included"})
+  } catch (err) {
+    return res.status(500).json({ error: "You must provide full social links with http(s) included" })
   }
 
   let updateObject = {
@@ -477,15 +477,15 @@ server.post("/update-profile", verifyJWT, (req, res) => {
   User.findOneAndUpdate({ _id: req.user }, updateObject, {
     runValidators: true
   })
-.then(() => {
-  return res.status(200).json({username})
-})
-.catch(err => {
-  if(err.code == 11000){
-    return res.status(409).json({ error: "username is already taken"})
-  }
-  return res.status(500).json({ error: err.message})
-})
+    .then(() => {
+      return res.status(200).json({ username })
+    })
+    .catch(err => {
+      if (err.code == 11000) {
+        return res.status(409).json({ error: "username is already taken" })
+      }
+      return res.status(500).json({ error: err.message })
+    })
 })
 
 server.post("/create-blog", verifyJWT, (req, res) => {
@@ -674,7 +674,7 @@ server.post("/add-comment", verifyJWT, (req, res) => {
 
   let user_id = req.user;
 
-  let { _id, comment, blog_author, replying_to } = req.body;
+  let { _id, comment, blog_author, replying_to, notification_id } = req.body;
 
   if (!comment.length) {
     return res.status(403).json({ error: "Write something to leave Some comment" });
@@ -713,6 +713,10 @@ server.post("/add-comment", verifyJWT, (req, res) => {
           notificationObj.notification_for = replyingToCommentDoc.commented_by
         })
 
+      if (notification_id) {
+        Notification.findOneAndUpdate({ _id: notification_id }, { reply: commentFile._id })
+          .then(notification => console.log("Notification Updated"))
+      }
 
 
     }
@@ -786,7 +790,7 @@ const deleteComments = (_id) => {
 
       Notification.findOneAndDelete({ comment: _id }).then(notification => console.log('comment notification deleted'))
 
-      Notification.findOneAndDelete({ reply: _id }).then(notification => console.log('reply notification deleted'))
+      Notification.findOneAndUpdate({ reply: _id }, { $unset: { reply: 1 } }).then(notification => console.log('reply notification deleted'))
 
       Blog.findOneAndUpdate({ _id: comment.blog_id }, { $pull: { comments: _id }, $inc: { "activity.total_comments": -1 }, "activity.total_parent_comments": comment.parent ? 0 : -1 })
         .then(blog => {
@@ -819,6 +823,138 @@ server.post("/delete-comment", verifyJWT, (req, res) => {
       else {
         return res.status(403).json({ error: "You can not delete this comment" })
       }
+    })
+
+})
+
+server.get("/new-notification", verifyJWT, (req, res) => {
+
+  let user_id = req.user;
+
+  Notification.exists({ notification_for: user_id, seen: false, user: { $ne: user_id } })
+    .then(result => {
+      if (result) {
+        return res.status(200).json({ new_notification_available: true })
+      } else {
+        return res.status(200).json({ new_notification_available: false })
+      }
+    })
+    .catch(err => {
+      console.log(err.message);
+      return res.status(500).json({ error: err.message })
+    })
+
+})
+
+server.post("/notifications", verifyJWT, (req, res) => {
+
+  let user_id = req.user;
+
+  let { page, filter, deletedDocCount } = req.body;
+
+  let maxLimit = 10;
+
+  let findQuery = { notification_for: user_id, user: { $ne: user_id } };
+
+  let skipDocs = (page - 1) * maxLimit;
+
+  if (filter != 'all') {
+    findQuery.type = filter;
+  }
+
+  if (deletedDocCount) {
+    skipDocs -= deletedDocCount;
+  }
+
+  Notification.find(findQuery)
+    .skip(skipDocs)
+    .limit(maxLimit)
+    .populate("blog", "title blog_id")
+    .populate("user", "personal_info.fullname personal_info.username personal_info.profile_img")
+    .populate("comment", "comment")
+    .populate("replied_on_comment", "comment")
+    .populate("reply", "comment")
+    .sort({ createdAt: -1 })
+    .select("createdAt type seen reply")
+    .then(notifications => {
+
+      Notification.updateMany(findQuery, { seen: true })
+        .skip(skipDocs)
+        .limit(maxLimit)
+        .then(() => console.log('notification seen'))
+
+      return res.status(200).json({ notifications })
+
+    })
+    .catch(err => {
+      console.log(err.message);
+      return res.status(500).json({ error: err.message })
+    })
+
+})
+
+server.post("/all-notifications-count", verifyJWT, (req, res) => {
+
+  let user_id = req.user;
+
+  let { filter } = req.body;
+
+  let findQuery = { notification_for: user_id, user: { $ne: user_id } }
+
+  if (filter != 'all') {
+    findQuery.type = filter;
+  }
+
+  Notification.countDocuments(findQuery)
+    .then(count => {
+      return res.status(200).json({ totalDocs: count })
+    })
+    .catch(err => {
+      return res.status(500).json({ error: err.message })
+    })
+
+})
+
+server.post("/user-written-blogs", verifyJWT, (req, res) => {
+
+  let user_id = req.user;
+
+  let { page, draft, query, deletedDocCount } = req.body;
+
+  let maxLimit = 5;
+  let skipDocs = (page - 1) * maxLimit;
+
+  if (deletedDocCount) {
+    skipDocs -= deletedDocCount;
+  }
+
+  Blog.find({ author: user_id, draft, title: new RegExp(query, 'i') })
+    .skip(skipDocs)
+    .limit(maxLimit)
+    .sort({ publishedAt: -1 })
+    .select(" title banner publishedAt blog_id activity des draft -_id ")
+    .then(blogs => {
+      return res.status(200).json({ blogs })
+    })
+    .catch(err => {
+      return res.status(500).json({ error: err.message })
+    })
+
+})
+
+server.post("/user-written-blogs-count", verifyJWT, (req, res) => {
+
+  let user_id = req.user;
+
+  let { draft, query } = req.body;
+
+  Blog.countDocuments({ author: user_id, draft, title: new RegExp(query, 'i') })
+    .then(count => {
+      return res.status(200).json({ totalDocs: count })
+    })
+    .catch(err => {
+      console.log(err.message);
+      return res.status(500).json({ error: err.message })
     })
 
 })
