@@ -74,7 +74,7 @@ let navigate = useNavigate();
       <nav className="bg-white navbar z-50">
         <Link to="/" className="flex-none w-14">
           <img src={ theme == "light" ? darkLogo : lightLogo} alt="logo" className="w-full drop-shadow-xl" />
-          <button className="ml-[30%] text-2xl font-bold drop-shadow-xl">ReadingSome</button>
+          <button className="ml-[30%] text-2xl font-bold drop-shadow-xl sm:hidden">ReadingSome</button>
         </Link>
         
 
