@@ -13,19 +13,42 @@ import SideNav from "./components/sidenavbar.component";
 import ChangePassword from "./pages/change-password.page";
 import EditProfile from "./pages/edit-profile.page";
 import Notifications from "./pages/notifications.page";
-import ManageBlogs from "./components/manage-blogcard.component";
+import ManageBlogs from "./pages/manage-blogs.page";
 
 export const UserContext = createContext({});
 
+export const ThemeContext = createContext({});
+
 const App = () => {
-  const [userAuth, setUserAuth] = useState({ access_token: null }); // Set initial state to avoid undefined
+  
+  const [userAuth, setUserAuth] = useState({}); // Set initial state to avoid undefined
+
+  const [theme, setTheme] = useState("light");
 
   useEffect(() => {
+
     let userInSession = lookInSession("user");
+
+    let themeInSession = lookInSession("theme")
+
     userInSession ? setUserAuth(JSON.parse(userInSession)) : setUserAuth({ access_token: null })
+
+    if(themeInSession){
+      setTheme(() => {
+        document.body.setAttribute('data-theme', themeInSession)
+
+        return themeInSession;
+      })
+    } else{
+      document.body.setAttribute('data-theme', theme)
+    }
+
+ 
+    
   }, [])
 
   return (
+    <ThemeContext.Provider value={{theme, setTheme}}>
     <UserContext.Provider value={{ userAuth, setUserAuth }}>
       <Routes>
         <Route path="/editor" element={<Editor />} />
@@ -49,6 +72,7 @@ const App = () => {
         </Route>
       </Routes>
     </UserContext.Provider>
+    </ThemeContext.Provider>
   );
 };
 

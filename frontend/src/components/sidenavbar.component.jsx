@@ -45,7 +45,7 @@ const SideNav = () => {
 
                     <div className="sticky top-[80px] z-30">
 
-                        <div className="md:hidden bg-white py-1 border-b border-grey flex flex-nowrap overflow-x-auto">
+                        <div className="md:hidden py-1 border-b border-grey flex flex-nowrap overflow-x-auto">
 
                             <button ref={sideBarIconTab} className="p-5 capitalize" onClick={changePageState}>
                                 <i className="fi fi-rr-bars-staggered pointer-events-none"></i>

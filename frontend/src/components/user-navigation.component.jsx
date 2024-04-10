@@ -25,17 +25,17 @@ const UserNavigationPanel = () => {
           <p>Write</p>
           <i className="fi fi-rr-file-edit text-xl"></i>
         </Link>
-        <Link to={`/user/${username}`} className="flex items-center justify-between link md:hidden pl-8 py-4">
+        <Link to={`/user/${username}`} className="flex items-center justify-between link pl-8 py-4">
           Profile
           <i className="fi fi-rr-user-pen text-xl"></i>
         </Link>
 
-        <Link to="/dashboard/blogs" className="flex items-center justify-between link md:hidden pl-8 py-4">
+        <Link to="/dashboard/blogs" className="flex items-center justify-between link pl-8 py-4">
           Dashboard
           <i className="fi fi-rr-browsers text-xl"></i>
         </Link>
 
-        <Link to="/settings/edit-profile" className="flex items-center justify-between link md:hidden pl-8 py-4">
+        <Link to="/settings/edit-profile" className="flex items-center justify-between link pl-8 py-4">
           Settings
           <i className="fi fi-rr-settings text-xl"></i>
         </Link>

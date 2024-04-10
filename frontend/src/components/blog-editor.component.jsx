@@ -1,7 +1,9 @@
 import { Link, useNavigate, useParams } from "react-router-dom";
-import logo from "../imgs/logo.png";
+import darkLogo from "../imgs/logo-light.png";
+import lightLogo from "../imgs/logo-dark.png";
 import AnimationWrapper from "../common/page-animation";
-import defaultBanner from "../imgs/blog banner.png";
+import defaultBannerLight from "../imgs/blog banner light.png";
+import defaultBannerDark from "../imgs/blog banner dark.png";
 import { uploadImage } from "../common/aws";
 import { useContext, useEffect, useRef } from "react";
 import { Toaster, toast } from "react-hot-toast";
@@ -9,10 +11,12 @@ import { EditorContext } from "../pages/editor.pages";
 import EditorJS from "@editorjs/editorjs";
 import { tools } from "./tools.component";
 import axios from "axios";
-import { UserContext } from "../App";
+import { ThemeContext, UserContext } from "../App";
 
 const BlogEditor = () => {
   let blogBannerRef = useRef();
+
+  let { theme } = useContext(ThemeContext);
 
   let {
     blog,
@@ -84,7 +88,7 @@ const BlogEditor = () => {
   const handleError = (e) => {
     let img = e.target;
 
-    img.src = defaultBanner;
+    img.src = theme == "light" ? defaultBannerLight : defaultBannerDark;
   };
 
   const handlePublishEvent = () => {
@@ -151,7 +155,7 @@ const BlogEditor = () => {
           toast.success("Drafted Some 😃");
   
           setTimeout(() => {
-            navigate("/");
+            navigate("/dashboard/blogs?tab=draft");
           }, 500);
         })
         .catch(({ response }) => {
@@ -169,12 +173,12 @@ const BlogEditor = () => {
 
   return (
     <>
-      <nav className="navbar">
+      <nav className="navbar z-50 bg-white">
         <Link className="flex-none w-14" to="/">
-          <img src={logo} />
+          <img src={ theme == "light" ? darkLogo : lightLogo } />
         </Link>
 
-        <p className="max-md:hidden text-black line-clamp-1 w-full ">
+        <p className="max-md:hidden text-black line-clamp-1 w-full text-2xl font-bold drop-shadow-xl">
           {title.length ? title : "New Blog"}
         </p>
 
@@ -211,7 +215,7 @@ const BlogEditor = () => {
 
             <textarea
               defaultValue={title}
-              className="text-4xl font-medium w-full h-20 outline-none resize-none mt-10 leading-tight placeholder:opacity-40"
+              className="text-4xl font-medium w-full h-20 outline-none resize-none mt-10 leading-tight placeholder:opacity-40 rounded-xl bg-white"
               onKeyDown={handleTitleKeyDown}
               onChange={handleTitleChange}
               placeholder="Some Blog Title"

@@ -1,14 +1,18 @@
 import { Link, Outlet, useNavigate } from "react-router-dom";
-import logo from "../imgs/logo.png";
+import darkLogo from "../imgs/logo-light.png";
+import lightLogo from "../imgs/logo-dark.png";
 import { useContext, useEffect, useState } from "react";
-import { UserContext } from "../App";
+import { ThemeContext, UserContext } from "../App";
 import UserNavigationPanel from "./user-navigation.component";
 import axios from "axios";
+import { storeInSession } from "../common/session";
 
 const Navbar = () => {
 
   const [searchBoxVisibility, setSearchBoxVisibility] = useState(false);
   const [userNavPanel, setUserNavPanel] = useState(false);
+
+  let { theme, setTheme } = useContext(ThemeContext);
 
 let navigate = useNavigate();
 
@@ -55,13 +59,24 @@ let navigate = useNavigate();
 
   }
 
+  const changeTheme = () => {
+    let newTheme = theme == "light" ? "dark" : "light";
+
+    setTheme(newTheme);
+
+    document.body.setAttribute("data-theme", newTheme)
+
+    storeInSession("theme", newTheme);
+  }
+
   return (
     <>
-      <nav className="navbar z-50">
+      <nav className="bg-white navbar z-50">
         <Link to="/" className="flex-none w-14">
-          <img src={logo} alt="logo" className="w-full drop-shadow-xl" />
-          <button className="btn btn-ghost ml-[1%] text-2xl font-bold drop-shadow-xl">ReadingSome</button>
+          <img src={ theme == "light" ? darkLogo : lightLogo} alt="logo" className="w-full drop-shadow-xl" />
+          <button className="ml-[30%] text-2xl font-bold drop-shadow-xl">ReadingSome</button>
         </Link>
+        
 
 
         <div
@@ -82,6 +97,12 @@ let navigate = useNavigate();
 
 
         <div className="flex items-center gap-3 md:gap-6 ml-auto ">
+        
+          {
+             theme == "light" ? <button className="w-12 h-12 rounded-full bg-grey relative hover:bg-black/10" onClick={changeTheme}><i className="fi fi-ss-moon-stars text-2xl block mt-2"></i>  </button> : <button className="w-12 h-12 rounded-full bg-grey relative hover:bg-black/10" onClick={changeTheme}><i className="fi fi-ss-sun text-2xl block mt-2"></i>  </button>
+          }
+        
+
           <button
             className="md:hidden bg-grey w-12 h-12 rounded-full flex items-center justify-center"
             onClick={() => setSearchBoxVisibility((currentVal) => !currentVal)}
@@ -97,6 +118,8 @@ let navigate = useNavigate();
             <i className="fi fi-sr-file-edit"></i>
             <p>Write</p>
           </Link>
+
+        
 
           {access_token ? (
             <>
