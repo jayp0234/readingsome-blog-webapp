@@ -206,7 +206,7 @@ const BlogEditor = () => {
                 <input
                   id="uploadBanner"
                   type="file"
-                  accept=".png, .jpg, jpeg"
+                  accept=".png, .jpg, .jpeg"
                   hidden
                   onChange={handleBannerUpload}
                 ></input>
