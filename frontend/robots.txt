@@ -1,0 +1,28 @@
+# Allow all web crawlers full access to the site
+User-agent: *
+Disallow:
+
+# Block all web crawlers from accessing the /private/ and /tmp/ directories
+User-agent: *
+Disallow: /private/
+Disallow: /tmp/
+
+# Block a specific web crawler (e.g., BadBot) from accessing the entire site
+User-agent: BadBot
+Disallow: /
+
+# Allow Googlebot full access
+User-agent: Googlebot
+Disallow:
+
+# Allow Bingbot full access
+User-agent: Bingbot
+Disallow:
+
+# Block all web crawlers from accessing the /admin/ directory
+User-agent: *
+Disallow: /admin/
+
+# Allow all web crawlers to access the /public/ directory
+User-agent: *
+Allow: /public/
