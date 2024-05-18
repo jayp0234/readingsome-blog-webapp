@@ -1,5 +1,6 @@
 import { Route, Routes } from "react-router-dom";
 import Navbar from "./components/navbar.component";
+import { Helmet } from 'react-helmet';
 import HomePage from "./pages/home.page";
 import UserAuthForm from "./pages/userAuthForm.page";
 import { createContext, useEffect, useState } from "react";
@@ -50,6 +51,15 @@ const App = () => {
   return (
     <ThemeContext.Provider value={{theme, setTheme}}>
     <UserContext.Provider value={{ userAuth, setUserAuth }}>
+    <Helmet>
+          <title>ReadingSome</title>
+          <meta name="description" content="Reading Some - A platform to discover and share interesting articles, blogs, and stories." />
+          <meta name="keywords" content="Reading, Articles, Blogs, Stories, Discover, Share, Comparision, readingsome, ReadingSome" />
+          <meta name="application-name" content="Reading Some" />
+          <meta name="apple-mobile-web-app-title" content="Reading Some" />
+          <meta name="robots" content="index, follow" />
+          <meta name="googlebot" content="index, follow" />
+        </Helmet>
       <Routes>
         <Route path="/editor" element={<Editor />} />
         <Route path="/editor/:blog_id" element={<Editor />} />
